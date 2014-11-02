@@ -8,6 +8,7 @@ import org.json.JSONObject;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
+import com.monkeymusicchallenge.astar.AStarSolver;
 
 // Hi! Welcome to the Monkey Music Challenge Java starter kit!
 
@@ -19,20 +20,22 @@ public class Main {
   public static void main(final String[] args) {
 
     // Don't forget to provide the right command line arguments
-    if (args.length < 2) {
-      System.out.println("Usage: java -jar target/warmup.jar <your-team-name> <your-api-key\n");
-      if (args.length < 1) {
-        System.out.println(" Missing argument: <your-team-name>");
-      }
-      if (args.length < 2) {
-        System.out.println(" Missing argument: <your-api-key>");
-      }
-      System.exit(1);
-    }
+//    if (args.length < 2) {
+//      System.out.println("Usage: java -jar target/warmup.jar <your-team-name> <your-api-key\n");
+//      if (args.length < 1) {
+//        System.out.println(" Missing argument: <your-team-name>");
+//      }
+//      if (args.length < 2) {
+//        System.out.println(" Missing argument: <your-api-key>");
+//      }
+//      System.exit(1);
+//    }
 
     // You identify yourselves by your team name and your API key
-    final String teamName = args[0];
-    final String apiKey = args[1];
+//    final String teamName = args[0];
+//    final String apiKey = args[1];
+	final String teamName = "AFPath";
+    final String apiKey = "S/bhlx2m05DD9/sdeKD/NPx3DAM=";
 
     // You POST to a team-specific URL:
     //   warmup.monkeymusicchallenge.com/team/<your-team-name>
@@ -40,8 +43,6 @@ public class Main {
     // Surf to this URL and watch your monkey carry out your commands!
     final String teamUrl = SERVER_URL + "/team/" + teamName;
 
-    // We've put the AI-code in a separate class
-    final AI ai = new AI();
 
     // Allright, time to get started!
 
@@ -50,13 +51,20 @@ public class Main {
         "command", "new game",
         "apiKey", apiKey);
 
+    // We've put the AI-code in a separate class
+    new AStarSolver(currentGameState);
+    final AI ai = new AI(currentGameState);
+
     // The current game state tells you if you have any turns left to move
     while (currentGameState.getInt("turns") > 0) {
       System.out.println("Remaining turns: " + currentGameState.getInt("turns"));
 
       // Use your AI to decide in which direction to move
+      long before = System.currentTimeMillis();
       final String nextMoveDirection = ai.move(currentGameState);
-
+      long after = System.currentTimeMillis();
+      System.out.println("Time: " + (after - before) + " ms");
+      
       // ...and send a new move command to the server
       currentGameState = postToServer(teamUrl,
           "command", "move",
