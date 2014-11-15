@@ -2,7 +2,6 @@ package com.monkeymusicchallenge.warmup;
 
 import java.util.LinkedList;
 import java.util.PriorityQueue;
-import java.util.concurrent.ThreadLocalRandom;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -22,7 +21,6 @@ public class AI {
 
 	public String move(JSONObject gameState) {
 
-		int remainingNumberOfTurns = gameState.getInt("turns");
 		JSONArray currentLevelLayout = gameState.getJSONArray("layout");
 		JSONArray pickedUpMusicItems = gameState.getJSONArray("pickedUp");
 		JSONArray currentPositionOfMonkey = gameState.getJSONArray("position");
@@ -43,22 +41,22 @@ public class AI {
 				Location l = queue.poll();
 				
 				for (int i = 0; i < 4; i++) {
-					if (l.getX() + xOffset[i] < visited.length && 
-							l.getX() + xOffset[i] >= 0 &&
-							l.getY() + yOffset[i] < visited[0].length &&
-							l.getY() + yOffset[i] >= 0 &&
-							visited[l.getX() + xOffset[i]][l.getY() + yOffset[i]] <= 2) {
+					if (l.getRow() + xOffset[i] < visited.length && 
+							l.getRow() + xOffset[i] >= 0 &&
+							l.getColumn() + yOffset[i] < visited[0].length &&
+							l.getColumn() + yOffset[i] >= 0 &&
+							visited[l.getRow() + xOffset[i]][l.getColumn() + yOffset[i]] <= 2) {
 						
-						visited[l.getX() + xOffset[i]][l.getY() + yOffset[i]]++;
+						visited[l.getRow() + xOffset[i]][l.getColumn() + yOffset[i]]++;
 						LinkedList<String> list = (LinkedList<String>)l.getPath().clone();
 						list.addLast(dirs[i]);
 						
-						String tile = currentLevelLayout.getJSONArray(l.getX() + xOffset[i]).getString(l.getY() + yOffset[i]);
+						String tile = currentLevelLayout.getJSONArray(l.getRow() + xOffset[i]).getString(l.getColumn() + yOffset[i]);
 						if (tile.equals("song") || tile.equals("album") || tile.equals("playlist") || (tile.equals("user") && pickedUpMusicItems.length() == 5)) {
 							path = list;
 							break;
 						} else if (tile.equals("empty")) {
-							queue.add(new Location(l.getX() + xOffset[i], l.getY() + yOffset[i], list));
+							queue.add(new Location(l.getRow() + xOffset[i], l.getColumn() + yOffset[i], list));
 						}
 					}
 				}

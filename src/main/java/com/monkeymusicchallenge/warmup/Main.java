@@ -8,7 +8,7 @@ import org.json.JSONObject;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
-import com.monkeymusicchallenge.astar.AStarSolver;
+import com.monkeymusicchallenge.astar.AStar;
 
 // Hi! Welcome to the Monkey Music Challenge Java starter kit!
 
@@ -52,7 +52,6 @@ public class Main {
         "apiKey", apiKey);
 
     // We've put the AI-code in a separate class
-    new AStarSolver(currentGameState);
     final AI ai = new AI(currentGameState);
 
     // The current game state tells you if you have any turns left to move
@@ -60,10 +59,8 @@ public class Main {
       System.out.println("Remaining turns: " + currentGameState.getInt("turns"));
 
       // Use your AI to decide in which direction to move
-      long before = System.currentTimeMillis();
-      final String nextMoveDirection = ai.move(currentGameState);
-      long after = System.currentTimeMillis();
-      System.out.println("Time: " + (after - before) + " ms");
+//      final String nextMoveDirection = ai.move(currentGameState);
+      String nextMoveDirection = ai.move(currentGameState);
       
       // ...and send a new move command to the server
       currentGameState = postToServer(teamUrl,
